@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% endblock %}
+
+{% block extra_content %}
+<!-- Hero Carousel Section -->
+<div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel" data-bs-interval="3000">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="6" aria-label="Slide 7"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <div class="hero-slide" style="background-image: url('{% get_media_prefix %}user_images/Image1.jpg');">
+        <div class="container">
+          <div class="hero-content">
+            <h1>Shop the Latest Trends</h1>
+            <p>Discover amazing products at unbeatable prices with fast delivery</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="hero-slide" style="background-image: url('{% get_media_prefix %}user_images/Image2.jpg');">
+        <div class="container">
+          <div class="hero-content">
+            <h1>Summer Collection</h1>
+            <p>Fresh styles for the new season</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="hero-slide" style="background-image: url('{% get_media_prefix %}user_images/image4.jpg');">
+        <div class="container">
+          <div class="hero-content">
+            <h1>Home & Living</h1>
+            <p>Transform your space with our curated collection</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="hero-slide" style="background-image: url('{% get_media_prefix %}user_images/image3.jpg'); background-position: center 20%;">
+        <div class="container">
+          <div class="hero-content">
+            <h1>Casual Office Wear</h1>
+            <p>Comfortable and stylish office wear</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="hero-slide" style="background-image: url('{% get_media_prefix %}user_images/Image5.jpg'); background-position: center 20%;">
+        <div class="container">
+          <div class="hero-content">
+            <h1>Fashion Forward</h1>
+            <p>Stay stylish with our latest fashion trends</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="hero-slide" style="background-image: url('{% get_media_prefix %}user_images/Image6.jpg'); background-position: center 20%;">
+        <div class="container">
+          <div class="hero-content">
+            <h1>Premium Collection</h1>
+            <p>Experience luxury with our premium selection</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="hero-slide" style="background-image: url('{% get_media_prefix %}user_images/Image7.jpg'); background-position: center 20%;">
+        <div class="container">
+          <div class="hero-content">
+            <h1>Exclusive Deals</h1>
+            <p>Special offers you won't find anywhere else</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<!-- Featured Products -->
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="text-center mb-4">Featured Products</h2>
+    </div>
+  </div>
+  
+  {% if products %}
+  <div class="row">
+    {% for product in products.object_list %}
+    <div class="col-lg-3 col-md-4 col-sm-6">
+      <div class="card product-card">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.title }}">
+        {% else %}
+          <img src="https://placehold.co/300x300/cccccc/ffffff?text=Product+Image" class="card-img-top product-img" alt="{{ product.title }}">
+        {% endif %}
+        <div class="card-body text-center">
+          <h5 class="product-title">{{ product.title }}</h5>
+          <p class="product-price">₹{{ product.price }}</p>
+          <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-add-to-cart">Buy Now</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <!-- Pagination -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          {% if products.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+          {% endif %}
+          
+          {% for num in products.paginator.page_range %}
+            {% if products.number == num %}
+              <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+          {% endfor %}
+          
+          {% if products.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-12 text-center py-5">
+      <h3 class="text-muted">No Products Available</h3>
+      <p class="text-muted">Please check back later for new arrivals!</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

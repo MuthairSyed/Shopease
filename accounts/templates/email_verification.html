@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification - ShopEase</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+        .email-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e1e8ed;
+        }
+        .email-header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .email-content {
+            padding: 30px;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            color: #2575fc;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+        .verify-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(37, 117, 252, 0.3);
+            transition: all 0.3s ease;
+        }
+        .verify-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 117, 252, 0.4);
+        }
+        .footer {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            padding: 25px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #2575fc;
+            text-decoration: none;
+        }
+        .contact-info {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .highlight {
+            background-color: #fff8e1;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin: 25px 0;
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+        }
+        .email-address {
+            background-color: #e3f2fd;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 16px;
+            display: inline-block;
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .email-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>📧 Email Verification</h1>
+            <p>ShopEase Account Update</p>
+        </div>
+        
+        <div class="email-content">
+            <div class="section">
+                <h2 class="section-title">Hello {{ user.full_name|default:user.email }},</h2>
+                <p>You're receiving this email because you requested to change your email address for your account at <strong>ShopEase</strong>.</p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">📧 New Email Address</h2>
+                <p>Your new email address will be:</p>
+                <p><span class="email-address">{{ new_email }}</span></p>
+                <p>Please click the button below to verify this email address:</p>
+                <center>
+                    <a href="{{ verification_url }}" class="verify-button" style="color: white;">Verify Email Address</a>
+                </center>
+                <p><strong>Note:</strong> After verification, you will be logged out and required to log in again with your new email address.</p>
+                <p>If the button above doesn't work, please copy and paste the following link into your browser:</p>
+                <div class="highlight">
+                    Email Verification Link: {{ verification_url }}
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">🔒 Security Notice</h2>
+                <p>If you didn't request this change, please ignore this email. Your current email address will remain unchanged.</p>
+                <p>If you have any concerns about the security of your account, please contact our support team immediately.</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>The ShopEase Team</strong></p>
+            <div class="contact-info">
+                <p>📧 <a href="mailto:support@shopease.com">support@shopease.com</a> | 📞 +91 8971278930</p>
+                <p>🌐 ShopEase E-commerce Platform</p>
+            </div>
+            <p>© 2025 ShopEase. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

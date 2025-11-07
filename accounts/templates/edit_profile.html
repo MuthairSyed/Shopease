@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'shop:home_page' %}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
+    </ol>
+  </nav>
+  
+  <div class="row">
+    <div class="col-12">
+      <h2>Edit Profile</h2>
+      
+      <div class="card profile-card">
+        <div class="card-header">
+          <h5 class="mb-0">Profile Information</h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" id="profileForm">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="profile">
+            <div class="mb-3">
+              <label for="{{ form.full_name.id_for_label }}" class="form-label">Full Name</label>
+              <input type="text" name="full_name" class="form-control" id="{{ form.full_name.id_for_label }}" value="{{ form.full_name.value|default:'' }}">
+            </div>
+            <div class="mb-3">
+              <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" id="{{ form.email.id_for_label }}" value="{{ form.email.value|default:'' }}">
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary" id="updateProfileBtn">Update Profile</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="card profile-card">
+        <div class="card-header">
+          <h5 class="mb-0">Change Password</h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" id="passwordForm">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="password">
+            <div class="mb-3">
+              <label for="{{ form.old_password.id_for_label }}" class="form-label">Current Password</label>
+              {{ form.old_password }}
+            </div>
+            <div class="mb-3">
+              <label for="{{ form.new_password1.id_for_label }}" class="form-label">New Password</label>
+              {{ form.new_password1 }}
+            </div>
+            <div class="mb-3">
+              <label for="{{ form.new_password2.id_for_label }}" class="form-label">Confirm New Password</label>
+              {{ form.new_password2 }}
+            </div>
+            
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Change Password</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="card profile-card">
+        <div class="card-header">
+          <h5 class="mb-0">Address Management</h5>
+        </div>
+        <div class="card-body">
+          <p>Manage your delivery addresses for faster checkout.</p>
+          <a href="{% url 'accounts:address_list' %}" class="btn btn-primary">
+            <i class="fas fa-map-marker-alt me-1"></i> Manage Addresses
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Email Verification Modal -->
+<div class="modal fade" id="emailVerificationModal" tabindex="-1" aria-labelledby="emailVerificationModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="emailVerificationModalLabel">📧 Email Verification Required</h5>
+      </div>
+      <div class="modal-body text-center">
+        <div class="mb-3">
+          <i class="fas fa-envelope-open-text" style="font-size: 3rem; color: #2575fc;"></i>
+        </div>
+        <h5>Please Check Your Email</h5>
+        <p>A verification link has been sent to your new email address. Please check your inbox and click the verification link to confirm the change.</p>
+        <p class="text-muted"><small>You will need to log in again after verification.</small></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="confirmVerificationBtn">OK, I'll Check My Email</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+  // Get the current email from the form
+  var currentEmail = "{{ request.user.email }}";
+  var newEmail = document.getElementById("{{ form.email.id_for_label }}").value;
+  
+  // If email is being changed, show the verification process
+  if (newEmail && newEmail !== currentEmail) {
+    // Allow form submission to server but show verification message
+    // The server will handle the email verification process
+    return true;
+  }
+});
+</script>
+{% endblock %}

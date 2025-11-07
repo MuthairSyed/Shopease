@@ -1,0 +1,60 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}Products{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card card-dashboard">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Products</h5>
+                <a class="btn btn-primary" href="{% url 'dashboard:add_product' %}">Add Product</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <th scope="row">{{ product.id }}</th>
+                                <td>{{ product.title }}</td>
+                                <td>{{ product.category }}</td>
+                                <td>
+                                    <form method="POST" class="d-inline" style="max-width: 120px;">
+                                        {% csrf_token %}
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text">₹</span>
+                                            <input type="number" name="price" value="{{ product.price }}" class="form-control form-control-sm" min="1">
+                                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                                            <input type="hidden" name="update_price" value="1">
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary mt-1">Update</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <a class="btn btn-info btn-sm" href="{% url 'dashboard:edit_product' product.id %}">Edit</a>
+                                    <a class="btn btn-danger btn-sm" href="{% url 'dashboard:delete_product' product.id %}">Delete</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No products found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

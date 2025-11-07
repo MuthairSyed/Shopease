@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'shop:home_page' %}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Wishlist</li>
+    </ol>
+  </nav>
+  
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-4">Your Wishlist</h2>
+    </div>
+  </div>
+  
+  {% if products %}
+  <div class="row">
+    {% for product in products %}
+    <div class="col-lg-3 col-md-4 col-sm-6">
+      <div class="card product-card">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.title }}">
+        {% else %}
+          <img src="https://placehold.co/300x300/cccccc/ffffff?text=Product+Image" class="card-img-top product-img" alt="{{ product.title }}">
+        {% endif %}
+        <div class="card-body text-center">
+          <h5 class="product-title">{{ product.title }}</h5>
+          <p class="product-price">₹{{ product.price }}</p>
+          <div class="d-grid gap-2">
+            <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-add-to-cart">Buy Now</a>
+            <a href="{% url 'shop:remove_from_favorites' product.id %}" class="btn btn-outline-danger">
+              <i class="fas fa-heart me-1"></i>Remove
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-12 text-center py-5">
+      <i class="fas fa-heart fa-3x mb-3 text-muted"></i>
+      <h3 class="text-muted">Your wishlist is empty</h3>
+      <p class="text-muted">Looks like you haven't added any items to your wishlist yet.</p>
+      <a href="{% url 'shop:home_page' %}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

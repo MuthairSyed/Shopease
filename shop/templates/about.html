@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'shop:home_page' %}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">About Us</li>
+    </ol>
+  </nav>
+  
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center mb-5">About ShopEase</h1>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-lg-6 mb-4">
+      <h2>Our Story</h2>
+      <p>ShopEase was founded with a simple mission: to make online shopping effortless, enjoyable, and accessible to everyone. What started as a small venture has grown into a trusted platform where customers can find everything they need in one convenient place.</p>
+      
+      <p>We understand that shopping should be more than just transactions—it should be an experience. That's why we've carefully curated a selection of high-quality products from trusted brands and emerging designers, ensuring there's something for every taste and budget.</p>
+      
+      <h3 class="mt-4">Why Choose ShopEase?</h3>
+      <ul>
+        <li><strong>Unbeatable Prices:</strong> We work directly with manufacturers and suppliers to offer you the best prices without compromising on quality.</li>
+        <li><strong>Fast Delivery:</strong> Get your orders delivered quickly and reliably to your doorstep.</li>
+        <li><strong>Easy Returns:</strong> Not satisfied with your purchase? Our hassle-free return policy has you covered.</li>
+        <li><strong>24/7 Support:</strong> Our customer service team is always ready to assist you with any questions or concerns.</li>
+        <li><strong>Secure Shopping:</strong> Shop with confidence knowing your personal and payment information is protected.</li>
+      </ul>
+    </div>
+    
+    <div class="col-lg-6">
+      <h2>Our Commitment</h2>
+      <p>At ShopEase, we're committed to providing an exceptional shopping experience that goes beyond just selling products. We believe in building lasting relationships with our customers based on trust, quality, and value.</p>
+      
+      <p>Our team works tirelessly to:</p>
+      <ul>
+        <li>Source high-quality products from reputable suppliers</li>
+        <li>Keep our website user-friendly and easy to navigate</li>
+        <li>Offer competitive prices and regular promotions</li>
+        <li>Provide exceptional customer service</li>
+        <li>Continuously improve based on customer feedback</li>
+      </ul>
+      
+      <div class="bg-light p-4 rounded mt-4">
+        <h4>Our Values</h4>
+        <p><strong>Customer First:</strong> Your satisfaction is our top priority.</p>
+        <p><strong>Integrity:</strong> We conduct business with honesty and transparency.</p>
+        <p><strong>Innovation:</strong> We constantly seek ways to improve your shopping experience.</p>
+        <p><strong>Community:</strong> We're proud to be part of a community of smart shoppers.</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Show this section only if user is not logged in -->
+  {% if not request.user.is_authenticated %}
+  <div class="row mt-5">
+    <div class="col-12 text-center">
+      <h3>Join Our Community Today</h3>
+      <p class="lead">Experience the ShopEase difference and discover why thousands of customers choose us for their everyday shopping needs.</p>
+      <a href="{% url 'accounts:user_register' %}" class="btn btn-primary btn-lg">Create Your Account</a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

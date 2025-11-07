@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'shop:home_page' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'orders:user_orders' %}">My Orders</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Order Tracking</li>
+    </ol>
+  </nav>
+  
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-4">Order Tracking</h2>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Order #{{ order.id }}</h5>
+          <span>
+            {% if order.status == 'delivered' %}
+              <span class="order-status status-delivered">Delivered</span>
+            {% elif order.status == 'shipped' %}
+              <span class="order-status status-shipped">Shipped</span>
+            {% elif order.status == 'processing' %}
+              <span class="order-status status-processing">Processing</span>
+            {% elif order.status == 'cancelled' %}
+              <span class="order-status status-cancelled">Cancelled</span>
+            {% else %}
+              <span class="order-status status-pending">Pending</span>
+            {% endif %}
+          </span>
+        </div>
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <p><strong>Order Date:</strong> {{ order.created|date:"F d, Y" }}</p>
+              <p><strong>Total Amount:</strong> ₹{{ order.get_total_price }}</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+              {% if order.status != 'cancelled' and order.status != 'delivered' %}
+              <a href="{% url 'orders:cancel_order' order.id %}" class="btn btn-outline-danger" 
+                 onclick="return confirm('Are you sure you want to cancel this order?')">Cancel Order</a>
+              {% endif %}
+              <a href="{% url 'orders:invoice_detail' order.id %}" class="btn btn-outline-primary ms-2">View Invoice</a>
+            </div>
+          </div>
+          
+          <!-- Order Progress Bar -->
+          <div class="row mb-5">
+            <div class="col-12">
+              <h4 class="mb-4">Order Progress</h4>
+              
+              <div class="progress-container">
+                <!-- Progress Line -->
+                <div class="progress-line-container">
+                  <div class="progress-line {% if order.status == 'pending' %}step-1{% elif order.status == 'processing' %}step-2{% elif order.status == 'shipped' %}step-3{% elif order.status == 'delivered' or order.status == 'cancelled' %}step-4{% endif %}"></div>
+                </div>
+                
+                <!-- Progress Steps -->
+                <div class="progress-steps">
+                  <div class="step {% if order.status != 'pending' %}completed{% endif %} {% if order.status == 'pending' %}active{% endif %}">
+                    <div class="step-icon">
+                      <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="step-label">Order Placed</div>
+                    <div class="step-date">{{ order.created|date:"M d, Y" }}</div>
+                  </div>
+                  
+                  <div class="step {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}completed{% endif %} {% if order.status == 'processing' %}active{% endif %}">
+                    <div class="step-icon">
+                      <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="step-label">Processing</div>
+                    <div class="step-date">
+                      {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}
+                        {{ order.updated|date:"M d, Y" }}
+                      {% else %}
+                        -
+                      {% endif %}
+                    </div>
+                  </div>
+                  
+                  <div class="step {% if order.status == 'shipped' or order.status == 'delivered' %}completed{% endif %} {% if order.status == 'shipped' %}active{% endif %}">
+                    <div class="step-icon">
+                      <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <div class="step-label">Shipped</div>
+                    <div class="step-date">
+                      {% if order.status == 'shipped' or order.status == 'delivered' %}
+                        {{ order.updated|date:"M d, Y" }}
+                      {% else %}
+                        -
+                      {% endif %}
+                    </div>
+                  </div>
+                  
+                  <div class="step {% if order.status == 'delivered' %}completed{% endif %} {% if order.status == 'delivered' %}active{% endif %}">
+                    <div class="step-icon">
+                      <i class="fas fa-home"></i>
+                    </div>
+                    <div class="step-label">Delivered</div>
+                    <div class="step-date">
+                      {% if order.status == 'delivered' %}
+                        {{ order.updated|date:"M d, Y" }}
+                      {% else %}
+                        -
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Order Items -->
+          <div class="row">
+            <div class="col-12">
+              <h4 class="mb-4">Order Items</h4>
+              
+              {% for item in order.items.all %}
+              <div class="row border-bottom pb-3 mb-3">
+                <div class="col-md-2">
+                  {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" class="img-fluid rounded" alt="{{ item.product.title }}">
+                  {% else %}
+                    <img src="https://placehold.co/100x100/cccccc/ffffff?text=Product" class="img-fluid rounded" alt="{{ item.product.title }}">
+                  {% endif %}
+                </div>
+                <div class="col-md-7">
+                  <h5><a href="{{ item.product.get_absolute_url }}" class="text-decoration-none">{{ item.product.title }}</a></h5>
+                  <p class="mb-1">Quantity: {{ item.quantity }}</p>
+                </div>
+                <div class="col-md-3 text-end">
+                  <p class="mb-1"><strong>Price:</strong> ₹{{ item.price }}</p>
+                  <p class="mb-0"><strong>Total:</strong> ₹{{ item.get_cost }}</p>
+                </div>
+              </div>
+              {% endfor %}
+              
+              <div class="row mt-3">
+                <div class="col-12 text-end">
+                  <h4><strong>Order Total: ₹{{ order.get_total_price }}</strong></h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.progress-container {
+  position: relative;
+  margin: 2rem 0;
+}
+
+.progress-line-container {
+  position: relative;
+  height: 4px;
+  background-color: #e9ecef;
+  margin: 0 20px;
+}
+
+.progress-line {
+  position: absolute;
+  height: 100%;
+  width: 0;
+  background-color: #0d6efd;
+  transition: width 0.5s ease;
+}
+
+.progress-line.step-1 {
+  width: 0%;
+}
+
+.progress-line.step-2 {
+  width: 33%;
+}
+
+.progress-line.step-3 {
+  width: 66%;
+}
+
+.progress-line.step-4 {
+  width: 100%;
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin-top: -12px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  color: #6c757d;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.step.completed .step-icon {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.step.active .step-icon {
+  background-color: #0d6efd;
+  color: white;
+  transform: scale(1.1);
+}
+
+.step-label {
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #6c757d;
+}
+
+.step.completed .step-label {
+  color: #0d6efd;
+}
+
+.step.active .step-label {
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+.step-date {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.step.completed .step-date {
+  color: #495057;
+}
+
+.order-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+  min-width: 80px;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-processing {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.status-shipped {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.status-delivered {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+</style>
+{% endblock %}

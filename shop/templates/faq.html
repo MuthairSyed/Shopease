@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'shop:home_page' %}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">FAQ</li>
+    </ol>
+  </nav>
+  
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center mb-5">Frequently Asked Questions</h1>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12">
+      <div class="accordion" id="faqAccordion">
+        <!-- Question 1 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              How do I place an order?
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              <p>Placing an order is simple:</p>
+              <ol>
+                <li>Browse our products and add items to your cart</li>
+                <li>Review your cart and proceed to checkout</li>
+                <li>Enter your shipping and payment information</li>
+                <li>Confirm your order and complete the payment</li>
+                <li>You'll receive an order confirmation email with details</li>
+              </ol>
+              <p>You can track your order status in the "My Orders" section of your account.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Question 2 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              What payment methods do you accept?
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              <p>We accept the following payment methods:</p>
+              <ul>
+                <li>Credit and debit cards (Visa, MasterCard, American Express)</li>
+                <li>PayPal</li>
+                <li>Bank transfers</li>
+                <li>UPI payments</li>
+                <li>Cash on Delivery (available for select locations)</li>
+              </ul>
+              <p>All payments are processed securely using industry-standard encryption.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Question 3 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              How long does delivery take?
+            </button>
+          </h2>
+          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              <p>Delivery times depend on your location and the shipping method selected:</p>
+              <ul>
+                <li><strong>Standard Shipping:</strong> 3-5 business days</li>
+                <li><strong>Express Shipping:</strong> 1-2 business days</li>
+                <li><strong>Same-Day Delivery:</strong> Available in select metro areas (order before 12 PM)</li>
+              </ul>
+              <p>You'll receive tracking information via email once your order has been shipped.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Question 4 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingFour">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+              What is your return policy?
+            </button>
+          </h2>
+          <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              <p>We offer a 30-day return policy for most items. To be eligible for a return:</p>
+              <ul>
+                <li>The item must be unused and in the same condition as received</li>
+                <li>The item must be in its original packaging</li>
+                <li>You must have the receipt or proof of purchase</li>
+              </ul>
+              <p>Some items are non-returnable, including:</p>
+              <ul>
+                <li>Personal care items (makeup, skincare, etc.)</li>
+                <li>Food and consumables</li>
+                <li>Downloadable software products</li>
+                <li>Gift cards</li>
+              </ul>
+              <p>For more details, please see our full <a href="{% url 'shop:return_policy' %}">Return Policy</a>.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Question 5 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingFive">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+              How do I track my order?
+            </button>
+          </h2>
+          <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              <p>You can track your order in several ways:</p>
+              <ol>
+                <li>Log in to your account and go to "My Orders"</li>
+                <li>Use the order tracking feature on our website by entering your order number</li>
+                <li>Check your email for shipping confirmation with tracking information</li>
+              </li>
+              <p>The tracking page will show you the current status of your order with a visual progress bar.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Question 6 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingSix">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+              Can I cancel my order?
+            </button>
+          </h2>
+          <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              <p>Yes, you can cancel your order if it hasn't been shipped yet:</p>
+              <ol>
+                <li>Log in to your account and go to "My Orders"</li>
+                <li>Find the order you want to cancel and click "Cancel Order"</li>
+                <li>Confirm the cancellation</li>
+              </ol>
+              <p>If your order has already been shipped, you'll need to return the items once received. You'll receive a full refund once we process the return.</p>
+              <p>You'll receive a confirmation email when your cancellation is processed.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Question 7 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingSeven">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+              Do you offer international shipping?
+            </button>
+          </h2>
+          <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              <p>Yes, we ship to many international destinations. Shipping costs and delivery times vary by location.</p>
+              <p>During checkout, you can see if we ship to your country and the associated costs. International orders may be subject to customs duties and taxes, which are the responsibility of the customer.</p>
+              <p>Please note that international shipments may take 7-14 business days to arrive.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Question 8 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingEight">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+              How do I contact customer support?
+            </button>
+          </h2>
+          <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              <p>You can reach our customer support team in several ways:</p>
+              <ul>
+                <li><strong>Email:</strong> support@shopease.com</li>
+                <li><strong>Phone:</strong> +91 89712 78930 (Monday-Friday, 9 AM - 6 PM IST)</li>
+                <li><strong>Live Chat:</strong> Available on our website during business hours</li>
+                <li><strong>Contact Form:</strong> Fill out our <a href="{% url 'shop:contact' %}">contact form</a> and we'll get back to you within 24 hours</li>
+              </ul>
+              <p>For fastest assistance, please include your order number if you're inquiring about a specific order.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

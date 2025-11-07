@@ -1,0 +1,18 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | ShopEase Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+  <a href="{% url 'admin:index' %}">
+    <img src="{% static 'media/shopping_bags.png' %}" alt="ShopEase" width="24" height="24" class="d-inline-block align-text-top"> <span style="color: #2575fc;">ShopEase</span> <span style="color: #6a11cb;">Admin</span>
+  </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrastyle %}
+
+{% endblock %}

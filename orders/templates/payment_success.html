@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'shop:home_page' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'cart:show_cart' %}">Cart</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Payment Success</li>
+    </ol>
+  </nav>
+  
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card text-center">
+        <div class="card-body p-5">
+          <div class="mb-4">
+            <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+          </div>
+          <h2 class="text-success mb-3">Payment Successful!</h2>
+          <p class="lead">Thank you for your purchase. Your order has been placed successfully.</p>
+          <p class="text-muted">Order ID: #{{ order.id }}</p>
+          
+          <div class="alert alert-info mt-4">
+            <h5><i class="fas fa-envelope me-2"></i>Order Confirmation Sent</h5>
+            <p class="mb-0">We've sent a detailed order confirmation with invoice to your email address.</p>
+          </div>
+          
+          <div class="mt-4">
+            <a href="{% url 'orders:user_orders' %}" class="btn btn-primary me-2">
+              <i class="fas fa-box me-1"></i> View My Orders
+            </a>
+            <a href="{% url 'shop:home_page' %}" class="btn btn-outline-primary">
+              <i class="fas fa-shopping-bag me-1"></i> Continue Shopping
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

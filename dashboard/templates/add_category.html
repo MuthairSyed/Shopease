@@ -1,0 +1,24 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}Add Category{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card card-dashboard">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Add New Category</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form }}
+                    <div class="form-group">
+                        <button class="btn btn-primary mt-3 w-100" type="submit">Add Category</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

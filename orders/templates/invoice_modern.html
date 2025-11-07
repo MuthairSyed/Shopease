@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice - ShopEase</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    {% load custom_filters %}
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            background-color: #f5f7fa;
+            padding: 30px 0;
+        }
+        
+        .invoice-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.07);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .invoice-header {
+            background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+            color: white;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .invoice-header::after {
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="1" d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,261.3C672,256,768,224,864,218.7C960,213,1056,235,1152,250.7C1248,267,1344,277,1392,282.7L1440,288L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .invoice-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .invoice-number {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .detail-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 20px;
+            width: 48%;
+        }
+        
+        .detail-box h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .detail-box h3 i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .detail-item {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        
+        .detail-label {
+            font-weight: 500;
+            min-width: 100px;
+            opacity: 0.8;
+        }
+        
+        .detail-value {
+            flex: 1;
+        }
+        
+        .invoice-body {
+            padding: 50px 30px 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2575fc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f4f8;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        .items-table th {
+            background: #f8f9fc;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .items-table td {
+            padding: 15px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        
+        .items-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .items-table tr:hover td {
+            background-color: #f8f9fc;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .totals-section {
+            width: 350px;
+            margin-left: auto;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+        
+        .total-row:not(:last-child) {
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        
+        .total-label {
+            font-weight: 500;
+        }
+        
+        .total-amount {
+            font-weight: 600;
+        }
+        
+        .grand-total {
+            font-size: 18px;
+            color: #2575fc;
+            margin-top: 5px;
+        }
+        
+        .payment-info {
+            background: #f8f9fc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .payment-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2575fc;
+        }
+        
+        .payment-details {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .payment-item {
+            width: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .payment-label {
+            font-weight: 500;
+            opacity: 0.8;
+            margin-right: 10px;
+        }
+        
+        .invoice-footer {
+            background: #f8f9fc;
+            padding: 25px 30px;
+            border-top: 1px solid #edf2f7;
+            text-align: center;
+            font-size: 13px;
+            color: #718096;
+        }
+        
+        .footer-text {
+            margin-bottom: 10px;
+        }
+        
+        .thank-you {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2575fc;
+            margin-top: 10px;
+        }
+        
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            
+            .invoice-container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .invoice-details {
+                flex-direction: column;
+            }
+            
+            .detail-box {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .totals-section {
+                width: 100%;
+            }
+            
+            .payment-item {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-header">
+            <div class="header-top">
+                <div class="logo"><img src="{% static 'media/shopping_bags.png' %}" alt="ShopEase" width="30" height="30" class="d-inline-block align-text-top"> ShopEase</div>
+                <div class="invoice-info">
+                    <div class="invoice-title">INVOICE</div>
+                    <div class="invoice-number">#SE-{{ order.id }}</div>
+                </div>
+            </div>
+            
+            <div class="invoice-details">
+                <div class="detail-box">
+                    <h3>🧾 Invoice To</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Name:</span>
+                        <span class="detail-value">{{ user.full_name|default:user.email }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value">{{ user.email }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Phone:</span>
+                        <span class="detail-value">+91 89712 78930</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Address:</span>
+                        <span class="detail-value">123 Shopping Street, Retail City, 560032</span>
+                    </div>
+                </div>
+                
+                <div class="detail-box">
+                    <h3>📅 Invoice Details</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Invoice #:</span>
+                        <span class="detail-value">SE-{{ order.id }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Order ID:</span>
+                        <span class="detail-value">ORD-{{ order.id }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Issue Date:</span>
+                        <span class="detail-value">{{ order.created|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Due Date:</span>
+                        <span class="detail-value">{{ order.created|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value">
+                            {% if order.status == 'pending' %}
+                                <span style="background: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 4px; font-size: 12px;">Pending</span>
+                            {% elif order.status == 'processing' %}
+                                <span style="background: #cce5ff; color: #004085; padding: 3px 8px; border-radius: 4px; font-size: 12px;">Processing</span>
+                            {% elif order.status == 'shipped' %}
+                                <span style="background: #d1ecf1; color: #0c5460; padding: 3px 8px; border-radius: 4px; font-size: 12px;">Shipped</span>
+                            {% elif order.status == 'delivered' %}
+                                <span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 12px;">Delivered</span>
+                            {% elif order.status == 'cancelled' %}
+                                <span style="background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 4px; font-size: 12px;">Cancelled</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="invoice-body">
+            <h2 class="section-title"><img src="{% static 'media/shopping_bags.png' %}" alt="ShopEase" width="24" height="24" class="d-inline-block align-text-top"> Order Items</h2>
+            
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Item Description</th>
+                        <th>SKU</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-right">Unit Price</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500;">{{ item.product.title }}</div>
+                            <div style="font-size: 12px; color: #718096; margin-top: 3px;">{{ item.product.description|truncatewords:10 }}</div>
+                        </td>
+                        <td>SE-{{ item.product.id }}</td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-right">₹{{ item.price }}</td>
+                        <td class="text-right">₹{{ item.get_cost }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="totals-section">
+                <div class="total-row">
+                    <span class="total-label">Subtotal:</span>
+                    <span class="total-amount">₹{{ order.get_total_price }}</span>
+                </div>
+                <div class="total-row">
+                    <span class="total-label">Shipping:</span>
+                    <span class="total-amount">₹0.00</span>
+                </div>
+                <div class="total-row">
+                    <span class="total-label">GST (18%):</span>
+                    <span class="total-amount">₹{{ gst|floatformat:2 }}</span>
+                </div>
+                <div class="total-row grand-total">
+                    <span class="total-label">Total Amount:</span>
+                    <span class="total-amount">₹{{ total|floatformat:2 }}</span>
+                </div>
+            </div>
+            
+            <div class="payment-info">
+                <h3>💳 Payment Information</h3>
+                <div class="payment-details">
+                    <div class="payment-item">
+                        <span class="payment-label">Payment Method:</span>
+                        <span class="payment-value">
+                            {% if order.payment_method == 'cod' %}
+                                Cash on Delivery
+                            {% elif order.payment_method == 'paypal' %}
+                                PayPal
+                            {% elif order.payment_method == 'upi' %}
+                                UPI
+                            {% else %}
+                                Credit/Debit Card
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="payment-item">
+                        <span class="payment-label">Payment Status:</span>
+                        <span class="payment-value">
+                            {% if order.status == 'processing' or order.status == 'shipped' or order.status == 'delivered' %}
+                                {% if order.payment_method == 'cod' %}
+                                    <span style="color: #ffc107;">🕒 Unpaid (COD)</span>
+                                {% else %}
+                                    <span style="color: #28a745;">✅ Paid</span>
+                                {% endif %}
+                            {% else %}
+                                <span style="color: #ffc107;">🕒 Pending</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="payment-item">
+                        <span class="payment-label">Transaction ID:</span>
+                        <span class="payment-value">
+                            {% if order.payment_method == 'cod' %}
+                                COD-SE-{{ order.id }}{{ order.created|date:"Ymd" }}
+                            {% else %}
+                                TXN-SE-{{ order.id }}{{ order.created|date:"Ymd" }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="payment-item">
+                        <span class="payment-label">Currency:</span>
+                        <span class="payment-value">INR (₹)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="invoice-footer">
+            <div class="footer-text">
+                <strong>ShopEase E-commerce Platform</strong> • support@shopease.com • +91 89712 78930
+            </div>
+            <div class="footer-text">
+                123 Shopping Street, Retail City, 560032
+            </div>
+            <div class="thank-you">Thank you for your business! 🙏</div>
+        </div>
+    </div>
+</body>
+</html>

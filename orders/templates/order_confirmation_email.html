@@ -1,0 +1,102 @@
+{% load math_extras %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - ShopEase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #0066cc;
+            margin-bottom: 20px;
+        }
+        .content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .button-secondary {
+            background-color: #6c757d;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #666;
+        }
+        .emoji {
+            font-size: 1.2em;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <h1>🛍️ ShopEase</h1>
+            <p>Your Order Confirmation</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">💖 Thank You for Shopping with ShopEase!</h2>
+            <p>We truly appreciate your trust in us and are thrilled to have been a part of your shopping experience. Your order is being carefully prepared and will be on its way soon!</p>
+            
+            <p>At ShopEase, our goal is to make every purchase smooth, enjoyable, and worthwhile. We hope you love your new items as much as we enjoyed bringing them to you.</p>
+        </div>
+
+        <div class="section">
+            <h3>Here's what you can do next:</h3>
+            <ul>
+                <li><strong class="emoji">📦</strong> Track Your Order easily from your account</li>
+                <li><strong class="emoji">💬</strong> Contact Support anytime for quick assistance</li>
+                <li><strong class="emoji">🌟</strong> Share Your Feedback — we'd love to hear from you!</li>
+            </ul>
+        </div>
+        <div class="section">
+            <p>Thank you once again for choosing ShopEase. Your satisfaction means the world to us — and we can't wait to see you again soon!</p>
+            <p><strong>Happy shopping,</strong><br>The ShopEase Team 🛍️</p>
+        </div>
+
+        <div class="footer">
+            <p>Invoice #SE-{{ order.id }} • Date: {{ order.created|date:"M d, Y" }}</p>
+            <p>ShopEase E-commerce Platform • support@shopease.com • +91 89712 78930</p>
+            <p>123 Shopping Street, Retail City, 560032</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,230 @@
+{% extends 'security_scanner/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Security Scanner Dashboard</h2>
+        
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <button id="run-tests-btn" class="btn scan-btn" onclick="runSecurityTests()">
+                    <i class="bi bi-play-circle"></i> Run Full Security Scan
+                </button>
+                <p class="mt-3 mb-0 text-muted">Click to initiate comprehensive security testing</p>
+            </div>
+        </div>
+        
+        <div class="row" id="dashboard-stats" style="display: none;">
+            <div class="col-md-3">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Total Tests</h5>
+                        <div class="summary-number" id="total-tests">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Passed</h5>
+                        <div class="summary-number text-success" id="passed-tests">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Failed</h5>
+                        <div class="summary-number text-danger" id="failed-tests">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Warnings</h5>
+                        <div class="summary-number text-warning" id="warning-tests">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4" id="scan-results" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0">Implemented Security Measures</h5>
+            </div>
+            <div class="card-body">
+                <div id="results-content"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function runSecurityTests() {
+    // Show loading overlay
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const scanProgress = document.getElementById('scan-progress');
+    const scanStatus = document.getElementById('scan-status');
+    
+    loadingOverlay.style.display = 'flex';
+    scanProgress.style.width = '0%';
+    scanStatus.textContent = 'Initializing security tests...';
+    
+   
+    let progress = 0;
+    const progressMessages = [
+        'Initializing security framework...',
+        'Loading security modules...',
+        'Connecting to database...',
+        'Verifying CSRF protection...',
+        'Checking session security...',
+        'Validating password policies...',
+        'Analyzing static files...',
+        'Reviewing email configuration...',
+        'Inspecting payment processing...',
+        'Scanning for common vulnerabilities...',
+        'Performing deep security analysis...',
+        'Generating security report...'
+    ];
+    
+    let messageIndex = 0;
+    
+    const progressInterval = setInterval(() => {
+        progress += 1;
+        if (progress <= 100) {
+            scanProgress.style.width = progress + '%';
+            // Update message at specific progress points
+            if (messageIndex < progressMessages.length && progress >= (messageIndex + 1) * 8) {
+                scanStatus.textContent = progressMessages[messageIndex];
+                messageIndex++;
+            } else {
+                scanStatus.textContent = `Running security tests... (${progress}%)`;
+            }
+        }
+        
+        // When progress reaches 100%, stop the interval and make the API call
+        if (progress >= 100) {
+            clearInterval(progressInterval);
+            scanStatus.textContent = 'Finalizing results...';
+            
+            // Make AJAX request to run tests
+            setTimeout(() => {
+                fetch('{% url "security_scanner:run_tests" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Update dashboard stats
+                    document.getElementById('total-tests').textContent = data.stats.total_tests;
+                    document.getElementById('passed-tests').textContent = data.stats.passed;
+                    document.getElementById('failed-tests').textContent = data.stats.failed;
+                    document.getElementById('warning-tests').textContent = data.stats.warnings;
+                    
+                    // Show stats
+                    document.getElementById('dashboard-stats').style.display = 'flex';
+                    
+                    // Display implemented security measures
+                    displaySecurityMeasures(data.results);
+                    
+                    // Hide loading overlay
+                    loadingOverlay.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('results-content').innerHTML = 
+                        '<div class="alert alert-danger">Error running tests: ' + error.message + '</div>';
+                    
+                    // Hide loading overlay
+                    loadingOverlay.style.display = 'none';
+                });
+            }, 500);
+        }
+    }, 150);
+}
+
+function displaySecurityMeasures(results) {
+    // Show the results card
+    document.getElementById('scan-results').style.display = 'block';
+    
+    // Filter only passed security measures
+    const passedMeasures = results.filter(result => result.status === 'PASS');
+    
+    // Create summary HTML
+    let html = `
+    <div class="row">
+        <div class="col-12">
+            <div class="card summary-card">
+                <div class="card-body">
+                    <h5 class="card-title">Security Measures Summary</h5>
+                    <p class="text-muted">The following security measures have been successfully implemented:</p>
+                    <div class="table-responsive">
+                        <table class="table table-bordered vuln-table">
+                            <thead>
+                                <tr>
+                                    <th>Security Measure</th>
+                                    <th>Status</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+    `;
+    
+    // Add passed measures to the table
+    passedMeasures.forEach(measure => {
+        html += `
+                                <tr>
+                                    <td><strong>${measure.test}</strong></td>
+                                    <td><span class="status-badge status-pass">PASS</span></td>
+                                    <td>${measure.details}</td>
+                                </tr>
+        `;
+    });
+    
+    // Add info measures to the table
+    const infoMeasures = results.filter(result => result.status === 'INFO');
+    infoMeasures.forEach(measure => {
+        html += `
+                                <tr>
+                                    <td><strong>${measure.test}</strong></td>
+                                    <td><span class="status-badge status-info">INFO</span></td>
+                                    <td>${measure.details}</td>
+                                </tr>
+        `;
+    });
+    
+    html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+    
+    document.getElementById('results-content').innerHTML = html;
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,239 @@
+{% extends 'security_scanner/base.html' %}
+
+{% block title %}Test Cases{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Test Cases Report</h2>
+        
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <button id="run-tests-btn" class="btn scan-btn" onclick="runSecurityTests()">
+                    <i class="bi bi-play-circle"></i> Run Test Cases
+                </button>
+                <p class="mt-3 mb-0 text-muted">Click to execute all security test cases</p>
+            </div>
+        </div>
+        
+        <div class="row" id="test-stats" style="display: none;">
+            <div class="col-md-2">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Total</h5>
+                        <div class="summary-number" id="total-tests">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Passed</h5>
+                        <div class="summary-number text-success" id="passed-tests">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Failed</h5>
+                        <div class="summary-number text-danger" id="failed-tests">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Warnings</h5>
+                        <div class="summary-number text-warning" id="warning-tests">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Info</h5>
+                        <div class="summary-number text-info" id="info-tests">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Critical</h5>
+                        <div class="summary-number text-danger" id="critical-tests">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4" id="test-results" style="display: none;">
+            <div class="card-header">
+                <h5 class="mb-0">Test Cases Details</h5>
+            </div>
+            <div class="card-body">
+                <div id="test-content"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function runSecurityTests() {
+    // Show loading overlay
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const scanProgress = document.getElementById('scan-progress');
+    const scanStatus = document.getElementById('scan-status');
+    
+    loadingOverlay.style.display = 'flex';
+    scanProgress.style.width = '0%';
+    scanStatus.textContent = 'Initializing test cases...';
+    
+    // Simulate detailed progress to 100%
+    let progress = 0;
+    const progressMessages = [
+        'Initializing test framework...',
+        'Loading test suite...',
+        'Preparing test environment...',
+        'Executing CSRF protection tests...',
+        'Running session security tests...',
+        'Validating password policy tests...',
+        'Performing database security tests...',
+        'Checking email configuration tests...',
+        'Executing payment processing tests...',
+        'Running vulnerability scan tests...',
+        'Analyzing test results...',
+        'Generating test report...'
+    ];
+    
+    let messageIndex = 0;
+    
+    const progressInterval = setInterval(() => {
+        progress += 1;
+        if (progress <= 100) {
+            scanProgress.style.width = progress + '%';
+            // Update message at specific progress points
+            if (messageIndex < progressMessages.length && progress >= (messageIndex + 1) * 8) {
+                scanStatus.textContent = progressMessages[messageIndex];
+                messageIndex++;
+            } else {
+                scanStatus.textContent = `Running test cases... (${progress}%)`;
+            }
+        }
+        
+        // When progress reaches 100%, stop the interval and make the API call
+        if (progress >= 100) {
+            clearInterval(progressInterval);
+            scanStatus.textContent = 'Finalizing results...';
+            
+            // Make AJAX request to run tests
+            setTimeout(() => {
+                fetch('{% url "security_scanner:run_tests" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Update test stats
+                    document.getElementById('total-tests').textContent = data.stats.total_tests;
+                    document.getElementById('passed-tests').textContent = data.stats.passed;
+                    document.getElementById('failed-tests').textContent = data.stats.failed;
+                    document.getElementById('warning-tests').textContent = data.stats.warnings;
+                    document.getElementById('info-tests').textContent = data.stats.info;
+                    document.getElementById('critical-tests').textContent = data.stats.critical;
+                    
+                    // Show stats
+                    document.getElementById('test-stats').style.display = 'flex';
+                    
+                    // Display test results
+                    displayTestResults(data.results);
+                    
+                    // Hide loading overlay
+                    loadingOverlay.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('test-content').innerHTML = 
+                        '<div class="alert alert-danger">Error running tests: ' + error.message + '</div>';
+                    
+                    // Hide loading overlay
+                    loadingOverlay.style.display = 'none';
+                });
+            }, 500);
+        }
+    }, 150);
+}
+
+function displayTestResults(results) {
+    // Show the results card
+    document.getElementById('test-results').style.display = 'block';
+    
+    // Create test results list
+    let html = '<div class="row">';
+    
+    results.forEach(result => {
+        let statusClass = '';
+        let statusBadgeClass = '';
+        
+        switch(result.status) {
+            case 'PASS':
+                statusClass = 'pass';
+                statusBadgeClass = 'status-pass';
+                break;
+            case 'FAIL':
+                statusClass = result.risk;
+                statusBadgeClass = 'status-' + result.risk;
+                break;
+            case 'WARNING':
+                statusClass = 'warning';
+                statusBadgeClass = 'status-warning';
+                break;
+            case 'INFO':
+                statusClass = 'info';
+                statusBadgeClass = 'status-info';
+                break;
+            default:
+                statusClass = 'info';
+                statusBadgeClass = 'status-info';
+                break;
+        }
+        
+        html += `
+        <div class="col-md-6">
+            <div class="card test-result-card ${statusClass}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h6 class="card-title mb-0">${result.test}</h6>
+                        <span class="status-badge ${statusBadgeClass}">${result.status}</span>
+                    </div>
+                    <p class="card-text mt-2 mb-0"><small>${result.details}</small></p>
+                </div>
+            </div>
+        </div>
+        `;
+    });
+    
+    html += '</div>';
+    
+    document.getElementById('test-content').innerHTML = html;
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

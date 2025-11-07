@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'shop:home_page' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="#">Profile</a></li>
+      <li class="breadcrumb-item active" aria-current="page">My Orders</li>
+    </ol>
+  </nav>
+  
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-4">My Orders</h2>
+    </div>
+  </div>
+  
+  {% if orders %}
+  <div class="row">
+    <div class="col-12">
+      {% for order in orders %}
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span><strong>Order ID:</strong> {{ order.id }}</span>
+          <span>
+            {% if order.status == 'delivered' %}
+              <span class="order-status status-delivered">Delivered</span>
+            {% elif order.status == 'shipped' %}
+              <span class="order-status status-shipped">Shipped</span>
+            {% elif order.status == 'processing' %}
+              <span class="order-status status-processing">Processing</span>
+            {% elif order.status == 'cancelled' %}
+              <span class="order-status status-cancelled">Cancelled</span>
+            {% else %}
+              <span class="order-status status-pending">Pending</span>
+            {% endif %}
+          </span>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <p class="mb-1"><strong>Order Date:</strong> {{ order.created|date:"F d, Y" }}</p>
+              <p class="mb-1"><strong>Status:</strong> 
+                {% if order.status == 'delivered' %}
+                  <span class="order-status status-delivered">Delivered</span>
+                {% elif order.status == 'shipped' %}
+                  <span class="order-status status-shipped">Shipped</span>
+                {% elif order.status == 'processing' %}
+                  <span class="order-status status-processing">Processing</span>
+                {% elif order.status == 'cancelled' %}
+                  <span class="order-status status-cancelled">Cancelled</span>
+                {% else %}
+                  <span class="order-status status-pending">Pending</span>
+                {% endif %}
+              </p>
+            </div>
+            <div class="col-md-6 text-md-end">
+              <p class="mb-1"><strong>Total Amount:</strong> ₹{{ order.get_total_price }}</p>
+            </div>
+          </div>
+          
+          {% for item in order.items.all %}
+          <div class="row border-bottom pb-3 mb-3">
+            <div class="col-md-2">
+              {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" class="img-fluid rounded" alt="{{ item.product.title }}">
+              {% else %}
+                <img src="https://placehold.co/100x100/cccccc/ffffff?text=Product" class="img-fluid rounded" alt="{{ item.product.title }}">
+              {% endif %}
+            </div>
+            <div class="col-md-7">
+              <h5><a href="{{ item.product.get_absolute_url }}" class="text-decoration-none">{{ item.product.title }}</a></h5>
+              <p class="mb-1">Quantity: {{ item.quantity }}</p>
+            </div>
+            <div class="col-md-3 text-end">
+              <p class="mb-1"><strong>Price:</strong> ₹{{ item.price }}</p>
+              <p class="mb-0"><strong>Total:</strong> ₹{{ item.get_cost }}</p>
+            </div>
+          </div>
+          {% endfor %}
+          
+          <div class="row mt-3">
+            <div class="col-12 text-end">
+              <h4><strong>Order Total: ₹{{ order.get_total_price }}</strong></h4>
+              <a href="{% url 'orders:order_tracking' order.id %}" class="btn btn-primary mt-2">Track Order</a>
+              <a href="{% url 'orders:invoice_detail' order.id %}" class="btn btn-outline-primary mt-2 ms-2">View Invoice</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-12 text-center py-5">
+      <i class="fas fa-box-open fa-3x mb-3 text-muted"></i>
+      <h3 class="text-muted">No orders yet</h3>
+      <p class="text-muted">You haven't placed any orders yet.</p>
+      <a href="{% url 'shop:home_page' %}" class="btn btn-primary">Start Shopping</a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+.order-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+  min-width: 80px;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-processing {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.status-shipped {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.status-delivered {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Security Scanner{% endblock %} | ShopEase</title>
+    <!-- Security-themed Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 5 L85 20 L85 80 L50 95 L15 80 L15 20 Z' fill='%232575fc'/%3E%3Cpath d='M50 15 L75 25 L75 75 L50 85 L25 75 L25 25 Z' fill='%23ffffff'/%3E%3Ccircle cx='50' cy='45' r='15' fill='%232575fc'/%3E%3Ccircle cx='50' cy='45' r='7' fill='%23ffffff'/%3E%3C/svg%3E">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .sidebar {
+            background-color: #fff;
+            border-right: 1px solid #dee2e6;
+            min-height: calc(100vh - 70px);
+            box-shadow: 3px 0 10px rgba(0,0,0,0.05);
+        }
+        .nav-link {
+            color: #495057;
+            border-radius: 5px;
+            margin: 5px 0;
+            transition: all 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: #e9ecef;
+            color: #2575fc;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        .scan-btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            color: white;
+        }
+        .scan-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+        .scan-btn:disabled {
+            transform: none;
+            box-shadow: none;
+        }
+        .test-result-card {
+            margin-bottom: 15px;
+            border-left: 4px solid;
+            transition: transform 0.2s;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .test-result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .test-result-card.critical {
+            border-left-color: #dc3545;
+        }
+        .test-result-card.high {
+            border-left-color: #fd7e14;
+        }
+        .test-result-card.medium {
+            border-left-color: #ffc107;
+        }
+        .test-result-card.low {
+            border-left-color: #20c997;
+        }
+        .test-result-card.pass {
+            border-left-color: #28a745;
+        }
+        .test-result-card.fail {
+            border-left-color: #dc3545;
+        }
+        .test-result-card.warning {
+            border-left-color: #ffc107;
+        }
+        .test-result-card.info {
+            border-left-color: #17a2b8;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        .status-critical {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-high {
+            background-color: #ffe5d0;
+            color: #9c4d10;
+        }
+        .status-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-low {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .status-pass {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-fail {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .scan-animation {
+            display: inline-block;
+            animation: scan 2s infinite linear;
+        }
+        @keyframes scan {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .summary-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .summary-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .risk-critical {
+            background-color: #dc3545;
+            color: white;
+        }
+        .risk-high {
+            background-color: #fd7e14;
+            color: white;
+        }
+        .risk-medium {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .risk-low {
+            background-color: #20c997;
+            color: white;
+        }
+        .risk-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .vuln-table th {
+            background-color: #e9ecef;
+        }
+        
+        /* Loading overlay styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(37, 117, 252, 0.2);
+            border-top: 5px solid #2575fc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .progress {
+            height: 10px;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1><i class="bi bi-shield-lock"></i> ShopEase Security Scanner</h1>
+                <div>
+                    <a href="{% url 'shop:home_page' %}" class="btn btn-light">
+                        <i class="bi bi-arrow-left-circle"></i> Back to Shop
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h3>Running Security Scans</h3>
+            <p>Please wait while we analyze your application's security...</p>
+            <div class="progress">
+                <div id="scan-progress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+            </div>
+            <p id="scan-status">Initializing security tests...</p>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 sidebar p-3">
+                <nav class="nav flex-column">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'security_scanner:dashboard' %}">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'vulnerability_report' %}active{% endif %}" href="{% url 'security_scanner:vulnerability_report' %}">
+                        <i class="bi bi-exclamation-triangle me-2"></i> Security Measures
+                    </a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'test_cases' %}active{% endif %}" href="{% url 'security_scanner:test_cases' %}">
+                        <i class="bi bi-list-check me-2"></i> Test Cases
+                    </a>
+                </nav>
+            </div>
+            <div class="col-md-10 p-4">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

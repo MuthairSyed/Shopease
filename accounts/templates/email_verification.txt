@@ -1,0 +1,33 @@
+📧 Email Verification - ShopEase
+
+Hello {{ user.full_name|default:user.email }},
+
+🎉 You're receiving this email because you requested to change your email address for your account at ShopEase.
+
+---
+
+📬 New Email Address:
+{{ new_email }}
+
+---
+
+🔐 Please click the link below to verify this email address:
+{{ verification_url }}
+
+---
+
+⚠️ IMPORTANT: After verification, you will be logged out and required to log in again with your new email address.
+
+---
+
+💡 If you didn't request this change, please ignore this email. Your current email address will remain unchanged.
+
+⚠️ If you have any concerns about the security of your account, please contact our support team immediately.
+
+---
+
+📞 Support: +91 8971278930
+📧 Email: support@shopease.com
+🌐 Website: ShopEase E-commerce Platform
+
+© 2025 ShopEase. All rights reserved.
